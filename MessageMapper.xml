@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.MessageDao">
+	<!--根据id获取留言信息  -->
+	<select id="getMessageById" resultMap="message">
+		select * from user u  
+		left join message m on u.id = m.sid_from where id = #{id}
+	</select>	
+	
+	<!-- 获取所有留言信息 -->
+	<select id="getAllMessage" resultMap="message">
+		select * from message
+	</select>
+	<!--将留言传到数据库  -->
+	<insert id="sendMsg">
+		insert into message(sid_from,content) values(#{id},#{content}) 
+	</insert>
+	<!--获取留言信息（通过不同留言状态）  -->
+	<select id="getMessage" resultMap="message">
+		select * from message where `status` in 
+		<foreach collection="array" open="(" close=")" separator="," item="status">
+			#{status}
+		</foreach>
+		 order by created_Time desc
+	</select>
+	<!--对留言信息的处理  -->
+	<update id="deal">
+		update message set `status`=#{status},updated_time=SYSDATE() where mid=#{mid}
+	</update>
+	<!--已读信息  -->
+	<update id="readMessage">
+		update message set `status` = 1 where `status` = 0
+	</update>
+	<resultMap type="entity.Message" id="message">
+		<result property="mid" column="mid"/>
+		<result property="sidFrom" column="sid_from"/>
+		<result property="content" column="content"/>
+		<result property="createdTime" column="created_Time"/>
+		<result property="updateTime" column="updated_Time"/>
+		<result property="status" column="status"/>
+	</resultMap>
+</mapper>

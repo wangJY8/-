@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.UserDao">
+	<!-- 根据id获取个人信息 -->
+	<select id="getUserById" resultMap="user">
+		select * from user where id  = #{id}
+	</select>
+	<!--获取所有人的信息  -->
+	<select id="getUser" resultMap="user">
+		select * from user
+	</select>
+	<!--修改  -->
+	<update id="modify">
+		update user 
+		<trim prefix="set" suffixOverrides="," suffix="where id = #{id}">
+			<if test="name != null and name != ''" >
+				name=#{name},
+			</if>
+			<if test="age != null and age != ''">
+				age = #{age},
+			</if>
+			<if test="address != null and address != ''">
+				address = #{address},
+			</if>
+			<if test="tele != null and tele != ''">
+				tele =#{tele},
+			</if>
+		</trim>
+	</update>
+	<!--删除  -->
+	<delete id="delUserById">
+		delete from user where id =#{id}
+	</delete>
+	<!--添加  -->
+	<insert id="addUser">
+		insert into user(name,age,address,tele,password) values(#{name},#{age},#{address},#{tele},#{password})
+	</insert>
+	<resultMap type="entity.User" id="user">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="age" column="age"/>
+		<result property="address" column="address"/>
+		<result property="tele" column="tele"/>
+		<result property="level" column="levle"/>
+	</resultMap>
+	
+</mapper>
